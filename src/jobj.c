@@ -146,7 +146,7 @@ void make_msg(Cmx_obj_t* cmx_obj)
 			add_ellement('\0');
 		}
 		else
-			add_ellement(NULL);
+			add_ellement((uint8_t)NULL);
 
 		if (cmx_obj->value[j].type == CMX_OBJ)
 		{
@@ -197,7 +197,6 @@ Cmx_obj_t* extract_msg(uint8_t* msg)
 {
 	static uint16_t j = 0;
 	Cmx_obj_t* cmx_obj = NULL;
-	Var_value_t var_value = {};
 	Value_t value = { J_NULL};
 
 	if(msg[j + 1] == OBJ)

@@ -1,16 +1,16 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(TestTask LANGUAGES CXX)
+project(TestTask LANGUAGES C)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 
 set(SOURCES
-    src/init_jobj.cpp
+    src/init_jobj.c
     src/init_jobj.h
-    src/jobj.cpp
+    src/jobj.c
     src/jobj.h
-    src/main.cpp
+    src/main.c
 )
 
 add_executable(${PROJECT_NAME}

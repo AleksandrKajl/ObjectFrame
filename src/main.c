@@ -1,4 +1,3 @@
-#include <iostream>
 #include "jobj.h"
 #include "init_jobj.h"
 

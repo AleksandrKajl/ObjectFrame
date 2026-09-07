@@ -1,18 +1,18 @@
 #pragma once
-#include <cstdint>
+#include <stdint.h>
 #include <stdbool.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <string.h>
 
-#pragma warning(disable : 4996)
+// #pragma warning(disable : 4996)
 #define DONE 0
 #define KEY_ERROR 0x31
 #define MEMORY_ERROR 0x32
 #define j_null NULL
 
-struct Value;
+typedef struct Value Value_t;
 //Перечесление для получения нужного значения из union
-enum Type_JObj
+typedef enum Type_JObj
 {
 	J_NULL = 0,
 	NUMBER,
@@ -20,27 +20,27 @@ enum Type_JObj
 	BOOLEAN,
 	STRING,
 	CMX_OBJ
-};
+} Type_JObj;
 
 //Тип состовного объекта
-enum Type_cmxobj
+typedef enum Type_cmxobj
 {
 	ARR = 0,
 	OBJ
-};
+} Type_cmxobj;
 
 //Структура которая описывает объект или массив
 typedef struct Complex_obj
 {
-	uint8_t valCnt = 0;
+	uint8_t valCnt;
 	Type_cmxobj type;
 	//const char* key = NULL;
-	Value* value;
+	Value_t* value;
 
 }Cmx_obj_t;
 
 //Объеденение описывающее варианты возможных значений
-union Var_value_t
+typedef union Var_value_t
 {
 	int number;
 	float float_number;
@@ -48,15 +48,15 @@ union Var_value_t
 	const char* string;
 	Cmx_obj_t cmx_obj;
 	uint8_t null;
-};
+} Var_value_t;
 
 //Структура описывающая значение
-typedef struct Value
+struct Value
 {
 	Type_JObj type;			//Тип значения, для получения значения из union
-	const char* key = NULL;			//Ключ для поиска и получения значения
+	const char* key;			//Ключ для поиска и получения значения
 	Var_value_t var_value;	//объеденение разных значений
-}Value_t;
+};
 
 Cmx_obj_t* make_cmxobj(Type_cmxobj type, Value_t meaning);
 uint8_t add_value(Cmx_obj_t* cmx_obj, Value_t meaning);
