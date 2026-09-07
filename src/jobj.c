@@ -32,7 +32,7 @@ uint8_t add_value(Cmx_obj_t* cmx_obj, Value_t meaning)
 
 	for (uint8_t idx = 0; idx < cmx_obj->valCnt - 1; ++idx)
 	{
-		if (cmx_obj->type == OBJ && cmx_obj->value[idx].key == meaning.key)
+		if (cmx_obj->type == OBJ && cmx_obj->value[idx].key != NULL && meaning.key != NULL && strcmp(cmx_obj->value[idx].key, meaning.key) == 0)
 			return KEY_ERROR;
 
 		tmpMeaning[idx] = cmx_obj->value[idx];
@@ -60,7 +60,7 @@ Cmx_obj_t* find_values(Cmx_obj_t* source_obj, const char* key)
 
 	for (uint16_t idx = 0; idx < source_obj->valCnt; ++idx)
 	{
-		if (source_obj->value[idx].key == key)
+		if (source_obj->value[idx].key != NULL && key != NULL && strcmp(source_obj->value[idx].key, key) == 0)
 		{
 			add_value(obj, source_obj->value[idx]);
 		}
@@ -86,7 +86,7 @@ Value_t* find_value(Cmx_obj_t* cmx_obj, const char* key)
 
 	for (uint16_t idx = 0; idx < cmx_obj->valCnt; ++idx)
 	{
-		if (cmx_obj->value[idx].key == key)
+		if (cmx_obj->value[idx].key != NULL && key != NULL && strcmp(cmx_obj->value[idx].key, key) == 0)
 		{
 			return &cmx_obj->value[idx];
 		}
@@ -106,6 +106,11 @@ bool init_msgarr()
 		return true;
 	
 	return false;
+}
+
+uint16_t get_msg_size()
+{
+	return idx;
 }
 
 //Вспомогательная функция добовления значения в массив

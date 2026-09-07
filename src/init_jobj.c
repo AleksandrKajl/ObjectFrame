@@ -6,6 +6,37 @@ static void print_error(const char* key)
 	printf("Error \\\"%s\\\"\n", key);
 }
 
+static void print_serialized_message(const uint8_t* message, uint16_t message_size)
+{
+	printf("Serialized message, %u bytes:\n", (unsigned)message_size);
+	for (uint16_t idx = 0; idx < message_size; ++idx)
+	{
+		printf("%02X ", message[idx]);
+		if ((idx + 1) % 16 == 0 || idx + 1 == message_size)
+			printf("\n");
+	}
+}
+
+static void print_deserialized_alias(Cmx_obj_t* root_obj)
+{
+	Value_t* test_array = find_value(root_obj, "Test array");
+	if (test_array == NULL || test_array->type != CMX_OBJ)
+		return;
+
+	for (uint8_t idx = 0; idx < test_array->var_value.cmx_obj.valCnt; ++idx)
+	{
+		Cmx_obj_t* item_obj = &test_array->var_value.cmx_obj.value[idx].var_value.cmx_obj;
+		Value_t* id = find_value(item_obj, "id");
+		if (id != NULL && id->type == STRING && strcmp(id->var_value.string, "350") == 0)
+		{
+			Value_t* alias = find_value(item_obj, "alias");
+			if (alias != NULL && alias->type == STRING)
+				printf("Deserialized alias for id 350: %s\n", alias->var_value.string);
+			return;
+		}
+	}
+}
+
 void init_jobj()
 {
 //Собираем root объект=================================================================
@@ -234,34 +265,19 @@ void init_jobj()
 	if (add_value(root_obj, value))				//Добавляем значение в объект
 		print_error(value.key);
 
-//Примеры использования библиотеки=========================================================================
-	//Рекурсивный поиск в объекте значений по ключу
-	Cmx_obj_t* obj = find_values(root_obj, "new obj");
-
-//Задача вывести значение "alias" из массив объектов в объекте которого "id" == "350"
-	{
-		//Перебераем элементы массива
-		for (uint8_t idx = 0; idx < test_arr->valCnt; ++idx)
-		{
-			//Функция возвращает значения из передонного объекта по ключу
-			Value_t* val = find_value(&test_arr->value[idx].var_value.cmx_obj, "id");
-			//Если значения "id" == "350"
-			if (val->var_value.string == "350")
-			{
-				//Ищем в этом оBбъекте значение с ключём "alias"
-				val = find_value(&test_arr->value[idx].var_value.cmx_obj, "alias");
-				//Выводим значение
-				printf("\"alias\" field value: %s",val->var_value.string);
-			}
-		}
-	}
-	
 //Создание сообщения для передачи
-	init_msgarr();			//Выделяем память под массив сообщения
+	if (!init_msgarr())
+	{
+		print_error("message buffer");
+		free_obj(root_obj);
+		return;
+	}
 	make_msg(root_obj);		//Собираем сообщение
+	print_serialized_message(msg_arr, get_msg_size());
 
 //Извлечение сообщения из массива
 	Cmx_obj_t* my_obj = extract_msg(msg_arr);	//Извлекаем сообщение
+	print_deserialized_alias(my_obj);
 
 //Освобождаем память
 	free_obj(root_obj);

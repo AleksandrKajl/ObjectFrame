@@ -65,6 +65,7 @@ Value_t* find_value(Cmx_obj_t* cmx_obj, const char* key);
 void make_msg(Cmx_obj_t* cmx_obj);
 Cmx_obj_t* extract_msg(uint8_t* msg);
 bool init_msgarr();
+uint16_t get_msg_size();
 void free_obj(Cmx_obj_t* cmx_obj);
 
 extern uint8_t* msg_arr;
